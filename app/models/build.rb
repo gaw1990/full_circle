@@ -1,5 +1,5 @@
-class Run < ApplicationRecord
-  belongs_to :application
+class Build < ApplicationRecord
+  belongs_to :project
   has_many :test_cases
   has_many :tests, through: :test_cases
 
