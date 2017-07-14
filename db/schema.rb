@@ -17,19 +17,26 @@ ActiveRecord::Schema.define(version: 20170714025429) do
 
   create_table "applications", primary_key: "application_id", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "runs", primary_key: "run_id", force: :cascade do |t|
-    t.bigint "suite_types_id"
-    t.bigint "applications_id"
+    t.bigint "suite_type_id"
+    t.bigint "application_id"
     t.datetime "run_at"
     t.string "seed"
-    t.index ["applications_id"], name: "index_runs_on_applications_id"
-    t.index ["suite_types_id"], name: "index_runs_on_suite_types_id"
+    t.decimal "duration", precision: 15, scale: 6
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["application_id"], name: "index_runs_on_application_id"
+    t.index ["suite_type_id"], name: "index_runs_on_suite_type_id"
   end
 
   create_table "suite_types", primary_key: "suite_type_id", force: :cascade do |t|
-    t.string "type"
+    t.string "suite_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "test_case_failures", primary_key: "test_case_failure_id", force: :cascade do |t|
@@ -42,13 +49,13 @@ ActiveRecord::Schema.define(version: 20170714025429) do
   end
 
   create_table "test_cases", primary_key: "test_case_id", force: :cascade do |t|
-    t.bigint "runs_id"
-    t.bigint "tests_id"
+    t.bigint "run_id"
+    t.bigint "test_id"
     t.decimal "duration", precision: 15, scale: 6
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["runs_id"], name: "index_test_cases_on_runs_id"
-    t.index ["tests_id"], name: "index_test_cases_on_tests_id"
+    t.index ["run_id"], name: "index_test_cases_on_run_id"
+    t.index ["test_id"], name: "index_test_cases_on_test_id"
   end
 
   create_table "tests", primary_key: "test_id", force: :cascade do |t|
