@@ -1,0 +1,2 @@
+class TestCaseFailure < ApplicationRecord
+end
