@@ -5,6 +5,11 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem 'pry-rails'
+
+# Easy service objects
+gem 'verbalize'
+
 # Easy lookups (thanks Erik)
 gem "lookup_by"
 
