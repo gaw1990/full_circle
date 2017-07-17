@@ -17,3 +17,6 @@
 /yarn-error.log
 
 .byebug_history
+
+# Ignore api keys SHHHH
+/config/api_keys.yml

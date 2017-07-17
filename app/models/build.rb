@@ -4,4 +4,5 @@ class Build < ApplicationRecord
   has_many :tests, through: :test_cases
 
   lookup_for :suite_type
+  lookup_for :build_status
 end
