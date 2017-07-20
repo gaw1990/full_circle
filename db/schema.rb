@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20170716174041) do
     t.bigint "build_status_id"
     t.datetime "run_at"
     t.integer "seed"
-    t.decimal "duration", precision: 15, scale: 6
+    t.integer "duration_milliseconds"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["build_status_id"], name: "index_builds_on_build_status_id"
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 20170716174041) do
     t.bigint "build_id"
     t.bigint "test_id"
     t.bigint "test_case_result_id"
-    t.decimal "duration", precision: 15, scale: 6
+    t.integer "duration_microseconds"
     t.string "error_message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

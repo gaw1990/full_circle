@@ -7,7 +7,7 @@ class CreateBuilds < ActiveRecord::Migration[5.1]
       t.belongs_to :build_status
       t.datetime :run_at
       t.integer :seed
-      t.decimal :duration, precision: 15, scale: 6
+      t.integer :duration_milliseconds
 
       t.timestamps
     end
