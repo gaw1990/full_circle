@@ -19,7 +19,7 @@ module CircleApi
 
           Rails.logger.info "#{p.name}:#{b_num}:status: #{build_get.body['status']}"
 
-          build = p.builds.find_or_create_by(build_number: b_num, build_status_id: BuildStatus.find_or_create_by(status: build_get.body['status']).id)
+          build = p.builds.find_or_create_by(build_number: b_num, build_status_id: BuildStatus.find_or_create_by(status: build_get.body['status']).id, duration_milliseconds: build_get.body['build_time_milis'], run_at: build_get.body['usage_queued_at'])
 
           next unless ['success', 'fixed', 'failed'].include? build_get.body['status']
 
@@ -37,19 +37,21 @@ module CircleApi
             if rspec_artifact_string
 
               Rails.logger.info "#{p.name}:#{b_num}: good artifact link for build"
+              begin
+                rspec_artifact_uri = URI(rspec_artifact_string)
+                run_details = Net::HTTP.get(rspec_artifact_uri + "?circle-token=#{API_TOKENS['circle_ci']['token']}")
 
-              rspec_artifact_uri = URI(rspec_artifact_string)
-              run_details = Net::HTTP.get(rspec_artifact_uri + "?circle-token=#{API_TOKENS['circle_ci']['token']}")
+                noko_run_details = Nokogiri::XML(run_details)
 
-              noko_run_details = Nokogiri::XML(run_details)
+                attrs = noko_run_details.document.children.first.attributes
 
-              attrs = noko_run_details.document.children.first.attributes
-
-              build.suite_type_id = SuiteType.find_or_create_by(suite_type: attrs['name'].value)
-              build.run_at = attrs['timestamp'].value.to_time
-              build.duration = attrs['time'].value.to_f
-              build.seed = noko_run_details.document.children.first.children[1].text.split(' ').last
-              build.save
+                build.suite_type_id = SuiteType.find_or_create_by(suite_type: attrs['name'].value)
+                build.run_at = attrs['timestamp'].value.to_time
+                build.seed = noko_run_details.document.children.first.children[1].text.split(' ').last
+                build.save
+              rescue
+                binding.pry
+              end
             end
           end
 
@@ -63,7 +65,7 @@ module CircleApi
             test_case = TestCase.create(
               test: test,
               build: build,
-              duration: tc['run_time'],
+              duration_microseconds: (tc['run_time'] * 1000000),
               test_case_result: TestCaseResult.find_or_create_by(result: tc['result']),
               error_message: tc['message']
             )
