@@ -1,0 +1,7 @@
+<h1><%= @project.name %></h1>
+<p>Number of builds: <%=@project.builds.count%></p>
+
+<h2>Tests with the most failed cases:</h2>
+<% @most_test_failures.each do |test| %>
+  <p><%= "test_id: #{test.test_id}, failure_count: #{test.test_cases.where('test_cases.test_case_result_id = ?', TestCaseResult['failure'].id).count}, test_file: #{test.file_name}" %></p>
+<%end%>
